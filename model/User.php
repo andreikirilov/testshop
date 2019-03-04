@@ -4,9 +4,9 @@ class User {
 
     public static function checkEmail($userEmail) {
         if (filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
-            return true;
+            return;
         }
-        return false;
+        return "Неправильный E-mail";
     }
 
     public static function checkEmailExists($userEmail) {
@@ -16,9 +16,9 @@ class User {
         $result->bindParam(":userEmail", $userEmail, PDO::PARAM_STR);
         $result->execute();
         if ($result->fetchColumn()) {
-            return false;
+            return "Такой email уже используется";
         }
-        return true;
+        return;
     }
 
     public static function checkLoggedId() {
@@ -37,34 +37,23 @@ class User {
 
     public static function checkName($userName) {
         if (strlen($userName) >= 3) {
-            return true;
+            return;
         }
-        return false;
+        return "Имя не должно быть короче 3-ех символов";
     }
 
     public static function checkPassword($userPass) {
         if (strlen($userPass) >= 6) {
-            return true;
+            return;
         }
-        return false;
+        return "Пароль не должен быть короче 6-ти символов";
     }
 
     public static function checkPhone($userPhone) {
         if (strlen($userPhone) >= 10) {
-            return true;
+            return;
         }
-        return false;
-    }
-
-    public static function checkUserData($userEmail, $userPass) {
-        $pdo = Db::connect();
-        $query = "SELECT id, name FROM user "
-                . "WHERE email = :userEmail AND password = :userPass";
-        $result = $pdo->prepare($query);
-        $result->bindParam(":userEmail", $userEmail, PDO::PARAM_STR);
-        $result->bindParam(":userPass", $userPass, PDO::PARAM_STR);
-        $result->execute();
-        return $result->fetch();
+        return "Неправильный телефон";
     }
 
     public static function editUserById($userId, $userName, $userPass) {
@@ -84,6 +73,17 @@ class User {
         $query = "SELECT * FROM user WHERE id = :userId";
         $result = $pdo->prepare($query);
         $result->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $result->execute();
+        return $result->fetch();
+    }
+
+    public static function getUserData($userEmail, $userPass) {
+        $pdo = Db::connect();
+        $query = "SELECT id, name FROM user "
+                . "WHERE email = :userEmail AND password = :userPass";
+        $result = $pdo->prepare($query);
+        $result->bindParam(":userEmail", $userEmail, PDO::PARAM_STR);
+        $result->bindParam(":userPass", $userPass, PDO::PARAM_STR);
         $result->execute();
         return $result->fetch();
     }

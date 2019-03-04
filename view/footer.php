@@ -1,4 +1,8 @@
-<hr><div><b>F O O T E R</b></div></body></html>
+<hr>
+<div>
+    <b>F O O T E R</b>
+</div>
+</body>
 <script src="/template/js/jquery-1.12.4.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -25,3 +29,4 @@
         });
     });
 </script>
+</html>

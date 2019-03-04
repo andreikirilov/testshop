@@ -16,7 +16,7 @@
             <br>
             <input type="submit" name="submit" value="Оформить" />
         </form>
-        <?php if ($errorArr): ?>
+        <?php if (!empty($errorArr)): ?>
             <ul>
                 <?php foreach ($errorArr as $error): ?>
                     <li><?php echo $error; ?></li>

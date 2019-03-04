@@ -4,7 +4,6 @@ class UserController {
 
     public function actionRegistration() {
         $result = false;
-        $errorArr = false;
         $userName = false;
         $userEmail = false;
         $userPass = false;
@@ -12,19 +11,12 @@ class UserController {
             $userName = filter_input(INPUT_POST, "name");
             $userEmail = filter_input(INPUT_POST, "email");
             $userPass = filter_input(INPUT_POST, "password");
-            if (!User::checkName($userName)) {
-                $errorArr[] = "Имя не должно быть короче 3-ех символов!";
-            }
-            if (!User::checkEmail($userEmail)) {
-                $errorArr[] = "Неправильный E-mail!";
-            }
-            if (!User::checkEmailExists($userEmail)) {
-                $errorArr[] = "Такой email уже используется!";
-            }
-            if (!User::checkPassword($userPass)) {
-                $errorArr[] = "Пароль не должен быть короче 6-ти символов!";
-            }
-            if ($errorArr == false) {
+            $errorArr[] = User::checkName($userName);
+            $errorArr[] = User::checkEmail($userEmail);
+            $errorArr[] = User::checkEmailExists($userEmail);
+            $errorArr[] = User::checkPassword($userPass);
+            $errorArr = array_filter($errorArr);
+            if (empty($errorArr)) {
                 $result = User::register($userName, $userEmail, $userPass);
             }
         }
@@ -33,24 +25,22 @@ class UserController {
     }
 
     public function actionLogin() {
-        $errorArr = false;
         $userEmail = false;
         $userPass = false;
         if (filter_input(INPUT_POST, "submit")) {
             $userEmail = filter_input(INPUT_POST, "email");
             $userPass = filter_input(INPUT_POST, "password");
-            if (!User::checkEmail($userEmail)) {
-                $errorArr[] = "Неправильный E-mail!";
-            }
-            if (!User::checkPassword($userPass)) {
-                $errorArr[] = "Пароль не должен быть короче 6-ти символов";
-            }
-            $userArr = User::checkUserData($userEmail, $userPass);
-            if (!$userArr) {
-                $errorArr[] = "Неправильные данные для входа на сайт";
-            } else {
-                $_SESSION["user"] = $userArr;
-                header("Location: /");
+            $errorArr[] = User::checkEmail($userEmail);
+            $errorArr[] = User::checkPassword($userPass);
+            $errorArr = array_filter($errorArr);
+            if (empty($errorArr)) {
+                $userArr = User::getUserData($userEmail, $userPass);
+                if (!$userArr) {
+                    $errorArr[] = "Неправильные данные для входа на сайт";
+                } else {
+                    $_SESSION["user"] = $userArr;
+                    header("Location: /");
+                }
             }
         }
         require_once(ROOT . "/view/user/login.php");

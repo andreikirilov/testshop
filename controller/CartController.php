@@ -33,7 +33,6 @@ class CartController {
             $totalPrice = Cart::getTotalPrice($itemArr);
             $totalCount = Cart::countItem();
             $result = false;
-            $errorArr = false;
             $userId = null;
             $userName = false;
             $userPhone = false;
@@ -46,13 +45,10 @@ class CartController {
                 $userName = filter_input(INPUT_POST, "name");
                 $userPhone = filter_input(INPUT_POST, "phone");
                 $userComment = filter_input(INPUT_POST, "comment");
-                if (!User::checkName($userName)) {
-                    $errorArr[] = "Неправильное имя";
-                }
-                if (!User::checkPhone($userPhone)) {
-                    $errorArr[] = "Неправильный телефон";
-                }
-                if ($errorArr == false) {
+                $errorArr[] = User::checkName($userName);
+                $errorArr[] = User::checkPhone($userPhone);
+                $errorArr = array_filter($errorArr);
+                if (empty($errorArr)) {
                     $result = Order::save($userId, $userName, $userPhone, $userComment, $itemInCart);
                     if ($result) {
                         //$adminEmail = "";

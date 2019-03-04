@@ -28,8 +28,6 @@ class Router {
                 $param = $segment;
                 $controllerObject = new $controllerName;
                 $result = call_user_func_array(array($controllerObject, $actionName), $param);
-            }
-            if ($result) {
                 break;
             }
         }
